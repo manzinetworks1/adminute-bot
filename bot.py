@@ -1,21 +1,19 @@
-import logging
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
-
 import os
+from telegram.ext import ApplicationBuilder, CommandHandler
+
 TOKEN = os.getenv("BOT_TOKEN")
 
-logging.basicConfig(level=logging.INFO)
-
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Bot is running on Railway!")
+async def start(update, context):
+    await update.message.reply_text("Bot is running!")
 
 def main():
-    app = ApplicationBuilder().token(TOKEN).build()
+    if not TOKEN:
+        raise ValueError("BOT_TOKEN not found in environment variables")
 
+    app = ApplicationBuilder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
 
-    app.run_polling()  # <-- Correct for PTB 20
+    app.run_polling()
 
 if __name__ == "__main__":
     main()
